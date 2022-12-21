@@ -22,9 +22,7 @@ func main() {
 	if !flags.WroteHelp(err) {
 		ch(err)
 	}
-	//   fmt.Println("opts:", opts)
-	//   fmt.Println("args:", args)
-
+	
 	var files []string
 	if len(args) < 2 {
 		cwd, err := filepath.Abs(".")
@@ -39,7 +37,11 @@ func main() {
 			if isDir(a) {
 				abs, err := filepath.Abs(filepath.Dir(a))
 				ch(err)
-				files = append(files, expandDir(abs)...)
+        if abs == "/" { // in root dir proceed with provided argument only
+          files = append(files, expandDir(a)...)
+        } else { // otherwise process parent folder
+          files = append(files, expandDir(abs)...)  
+        }
 			} else {
 				abs, err := filepath.Abs(a) // we need fullpath to FILE here!
 				ch(err)
@@ -162,7 +164,6 @@ func findSimilar(f string) []string {
 		}
 	}
 	found = found[:i]
-	//   fmt.Println("FOUND:",found)
 	return found
 }
 
