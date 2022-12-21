@@ -22,7 +22,7 @@ func main() {
 	if !flags.WroteHelp(err) {
 		ch(err)
 	}
-	
+
 	var files []string
 	if len(args) < 2 {
 		cwd, err := filepath.Abs(".")
@@ -37,11 +37,11 @@ func main() {
 			if isDir(a) {
 				abs, err := filepath.Abs(filepath.Dir(a))
 				ch(err)
-        if abs == "/" { // in root dir proceed with provided argument only
-          files = append(files, expandDir(a)...)
-        } else { // otherwise process parent folder
-          files = append(files, expandDir(abs)...)  
-        }
+				if abs == "/" { // in root dir proceed with provided argument only
+					files = append(files, expandDir(a)...)
+				} else { // otherwise process parent folder
+					files = append(files, expandDir(abs)...)
+				}
 			} else {
 				abs, err := filepath.Abs(a) // we need fullpath to FILE here!
 				ch(err)
@@ -56,6 +56,7 @@ func main() {
 	files = uniq(files)
 	//   fmt.Println("list of files:", files)
 	for _, f := range files {
+		fmt.Println("processing:", f)
 		extime, err := exif.ReadExifTime(f)
 		ch(err)
 		if extime != "" {
